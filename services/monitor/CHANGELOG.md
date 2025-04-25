@@ -14,10 +14,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **deps:** update all patch and minor dependencies ([d439283](https://github.com/ethereum/sourcify/commit/d439283e16b00c4f8ef196c7ae3a4ae889061c33))
 - **deps:** update all patch and minor dependencies ([#2096](https://github.com/ethereum/sourcify/issues/2096)) ([49af4a6](https://github.com/ethereum/sourcify/commit/49af4a64bb0a72b6224927d732485ff9a337031d))
 
-# Changelog for `sourcify-monitor`
-
-All notable changes to this project will be documented in this file.
-
 ## sourcify-monitor@1.3.9 - 2025-04-09
 
 - Update dependencies
