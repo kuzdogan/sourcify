@@ -1,3 +1,15 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [2.0.1](https://github.com/ethereum/sourcify/compare/@ethereum-sourcify/lib-sourcify@2.0.0...@ethereum-sourcify/lib-sourcify@2.0.1) (2025-04-25)
+
+### Bug Fixes
+
+- **deps:** update all patch and minor dependencies ([d439283](https://github.com/ethereum/sourcify/commit/d439283e16b00c4f8ef196c7ae3a4ae889061c33))
+- **deps:** update all patch and minor dependencies ([#2096](https://github.com/ethereum/sourcify/issues/2096)) ([49af4a6](https://github.com/ethereum/sourcify/commit/49af4a64bb0a72b6224927d732485ff9a337031d))
+
 # Changelog for `@ethereum-sourcify/lib-sourcify`
 
 All notable changes to this project will be documented in this file.
@@ -33,7 +45,7 @@ All notable changes to this project will be documented in this file.
 
 ## @ethereum-sourcify/lib-sourcify@1.10.1 - 2024-12-11
 
-- Add SourcifyChain.getStorageAt 
+- Add SourcifyChain.getStorageAt
 - Update dependencies
 
 ## @ethereum-sourcify/lib-sourcify@1.10.0 - 2024-10-29
