@@ -1,6 +1,6 @@
 import { id as keccak256str } from 'ethers';
 import semver from 'semver';
-import { getIpfsGateway, performFetch } from './fetchUtils';
+import { performFetch } from './fetchUtils';
 import { SolidityCompilation } from '../Compilation/SolidityCompilation';
 import {
   Libraries,
@@ -10,7 +10,13 @@ import {
   MetadataSourceMap,
 } from '@ethereum-sourcify/compilers-types';
 import { ISolidityCompiler, StringMap } from '../Compilation/CompilationTypes';
-import { InvalidSources, MissingSources, PathContent } from './ValidationTypes';
+import {
+  InvalidSources,
+  IpfsGateway,
+  MissingSources,
+  PathContent,
+  ValidationError,
+} from './ValidationTypes';
 import {
   AuxdataStyle,
   decode as decodeBytecode,
@@ -23,6 +29,7 @@ import {
   reorderAlphabetically,
   getVariationsByContentHash,
 } from './variationsUtils';
+import { logDebug } from '../logger';
 
 export class SolidityMetadataContract {
   metadata: Metadata;
@@ -38,8 +45,22 @@ export class SolidityMetadataContract {
   compilation: SolidityCompilation | null;
   solcJsonInput: SolidityJsonInput | null;
 
+  // Static IPFS gateway configuration
+  private static ipfsGateway: IpfsGateway = {
+    url: 'https://ipfs.io/ipfs/',
+  };
+
+  // Static method to set the IPFS gateway
+  public static setGlobalIpfsGateway(gateway: IpfsGateway): void {
+    SolidityMetadataContract.ipfsGateway = gateway;
+  }
+
+  public static getGlobalIpfsGateway(): IpfsGateway {
+    return SolidityMetadataContract.ipfsGateway;
+  }
+
   constructor(metadata: Metadata, providedSources: PathContent[]) {
-    this.metadata = metadata;
+    this.metadata = structuredClone(metadata);
     // These are assigned in `assembleContract`
     this.foundSources = {};
     this.missingSources = {};
@@ -175,8 +196,6 @@ export class SolidityMetadataContract {
 
   /**
    * Asynchronously attempts to fetch the missing sources of this contract. An error is thrown in case of a failure.
-   *
-   * @param log log object
    */
   async fetchMissing(): Promise<void> {
     const IPFS_PREFIX = 'dweb:/ipfs/';
@@ -197,13 +216,12 @@ export class SolidityMetadataContract {
         for (const url of file.urls) {
           if (url.startsWith(IPFS_PREFIX)) {
             const ipfsCID = url.slice(IPFS_PREFIX.length);
-            const ipfsGateway = getIpfsGateway();
-            const ipfsUrl = ipfsGateway.url + ipfsCID;
+            const ipfsUrl = SolidityMetadataContract.ipfsGateway.url + ipfsCID;
             retrievedContent = await performFetch(
               ipfsUrl,
               hash,
               fileName,
-              ipfsGateway.headers,
+              SolidityMetadataContract.ipfsGateway.headers,
             );
             if (retrievedContent) {
               break;
@@ -219,10 +237,13 @@ export class SolidityMetadataContract {
     }
 
     if (Object.keys(this.missingSources).length) {
-      const error = new Error(
-        `Resource missing; unsuccessful fetching: ${Object.keys(this.missingSources).join(', ')}`,
-      );
-      throw error;
+      logDebug('Resource missing; unsuccessful fetching.', {
+        missing: this.missingSources,
+      });
+      throw new ValidationError({
+        code: 'missing_source',
+        missingSources: Object.keys(this.missingSources),
+      });
     }
 
     this.createJsonInputFromMetadata();
@@ -233,11 +254,18 @@ export class SolidityMetadataContract {
       Object.keys(this.missingSources).length > 0 ||
       Object.keys(this.invalidSources).length > 0
     ) {
-      throw new Error(
-        `Can't create JsonInput from metadata: Missing or invalid sources in metadata: ${JSON.stringify(
-          this.missingSources,
-        )}`,
+      logDebug(
+        "Can't create JsonInput from metadata: Missing or invalid sources in metadata.",
+        {
+          missing: this.missingSources,
+          invalid: this.invalidSources,
+        },
       );
+      throw new ValidationError({
+        code: 'missing_or_invalid_source',
+        missingSources: Object.keys(this.missingSources),
+        invalidSources: Object.keys(this.invalidSources),
+      });
     }
 
     this.solcJsonInput = {} as SolidityJsonInput;
@@ -258,11 +286,20 @@ export class SolidityMetadataContract {
     };
 
     if (!compilationTarget || Object.keys(compilationTarget).length != 1) {
-      throw new Error(
-        `Can't create JsonInput from metadata: Invalid compilationTarget in metadata: ${Object.keys(
-          this.metadata.settings.compilationTarget,
-        ).join(',')}`,
+      logDebug(
+        `Can't create JsonInput from metadata: Invalid compilationTarget in metadata`,
+        {
+          compilationTargets: Object.keys(
+            this.metadata.settings.compilationTarget,
+          ),
+        },
       );
+      throw new ValidationError({
+        code: 'invalid_compilation_target',
+        compilationTargets: Object.keys(
+          this.metadata.settings.compilationTarget,
+        ),
+      });
     }
 
     this.handleInlinerBug();

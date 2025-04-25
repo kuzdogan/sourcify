@@ -9,11 +9,12 @@ import type { Request, Response, NextFunction } from "express";
 import { error as openApiValidatorErrors } from "express-openapi-validator";
 import logger from "../../common/logger";
 import {
-  ErrorMessagePayload,
   getErrorMessageFromCode,
   SourcifyLibErrorCode,
+  SourcifyLibErrorParameters,
 } from "@ethereum-sourcify/lib-sourcify";
 import { TooManyRequests } from "../../common/errors/TooManyRequests";
+import { BadGatewayError } from "../../common/errors/BadGatewayError";
 
 export type ErrorCode =
   | VerificationErrorCode
@@ -23,7 +24,11 @@ export type ErrorCode =
   | "invalid_parameter"
   | "proxy_resolution_error"
   | "job_not_found"
-  | "duplicate_verification_request";
+  | "duplicate_verification_request"
+  | "etherscan_request_failed"
+  | "etherscan_limit"
+  | "not_etherscan_verified"
+  | "malformed_etherscan_response";
 
 export interface GenericErrorResponse {
   customCode: ErrorCode;
@@ -38,12 +43,6 @@ export interface MatchingErrorResponse extends GenericErrorResponse {
   onchainCreationCode?: string;
   onchainRuntimeCode?: string;
   creationTransactionHash?: string;
-}
-
-export class MatchingError extends Error {
-  constructor(public response: MatchingErrorResponse) {
-    super(response.message);
-  }
 }
 
 export class InternalError extends InternalServerError {
@@ -137,6 +136,58 @@ export class AlreadyVerifiedError extends ConflictError {
   }
 }
 
+export class EtherscanRequestFailedError extends BadGatewayError {
+  payload: GenericErrorResponse;
+
+  constructor(message: string) {
+    super(message);
+    this.payload = {
+      customCode: "etherscan_request_failed",
+      message,
+      errorId: uuidv4(),
+    };
+  }
+}
+
+export class EtherscanLimitError extends TooManyRequests {
+  payload: GenericErrorResponse;
+
+  constructor(message: string) {
+    super(message);
+    this.payload = {
+      customCode: "etherscan_limit",
+      message,
+      errorId: uuidv4(),
+    };
+  }
+}
+
+export class NotEtherscanVerifiedError extends NotFoundError {
+  payload: GenericErrorResponse;
+
+  constructor(message: string) {
+    super(message);
+    this.payload = {
+      customCode: "not_etherscan_verified",
+      message,
+      errorId: uuidv4(),
+    };
+  }
+}
+
+export class MalformedEtherscanResponseError extends BadRequestError {
+  payload: GenericErrorResponse;
+
+  constructor(message: string) {
+    super(message);
+    this.payload = {
+      customCode: "malformed_etherscan_response",
+      message,
+      errorId: uuidv4(),
+    };
+  }
+}
+
 // Maps OpenApiValidator errors to our custom error format
 export function errorHandler(
   err: any,
@@ -169,11 +220,16 @@ export type VerificationErrorCode =
   | "already_verified"
   | "internal_error";
 
+export type VerificationErrorParameters =
+  | SourcifyLibErrorParameters
+  | {
+      code: VerificationErrorCode;
+    };
+
 export function getVerificationErrorMessage(
-  code: VerificationErrorCode,
-  payload?: ErrorMessagePayload,
+  params: VerificationErrorParameters,
 ) {
-  switch (code) {
+  switch (params.code) {
     case "unsupported_language":
       return "The provided language is not supported.";
     case "already_verified":
@@ -181,6 +237,6 @@ export function getVerificationErrorMessage(
     case "internal_error":
       return "The server encountered an unexpected error.";
     default:
-      return getErrorMessageFromCode(code, payload);
+      return getErrorMessageFromCode(params as SourcifyLibErrorParameters);
   }
 }

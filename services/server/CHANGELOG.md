@@ -1,14 +1,30 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [3.0.1](https://github.com/ethereum/sourcify/compare/sourcify-server@3.0.0...sourcify-server@3.0.1) (2025-04-25)
+
+### Bug Fixes
+
+- **deps:** update all patch and minor dependencies ([d439283](https://github.com/ethereum/sourcify/commit/d439283e16b00c4f8ef196c7ae3a4ae889061c33))
+- **deps:** update all patch and minor dependencies ([#2096](https://github.com/ethereum/sourcify/issues/2096)) ([49af4a6](https://github.com/ethereum/sourcify/commit/49af4a64bb0a72b6224927d732485ff9a337031d))
+
+### Reverts
+
+- Revert "Disable v2 verification and job status endpoints and do not run Piscina workers (#2061)" (#2069) ([c755697](https://github.com/ethereum/sourcify/commit/c75569736f4f45c0ec515886c858139632eb7dfa)), closes [#2061](https://github.com/ethereum/sourcify/issues/2061) [#2069](https://github.com/ethereum/sourcify/issues/2069) [#2061](https://github.com/ethereum/sourcify/issues/2061)
+
 # Changelog for `sourcify-server`
 
 All notable changes to this project will be documented in this file.
 
 ## sourcify-server@3.0.0 - 2025-04-09
 
-- Integrate new lib-sourcify classes in server (#1960) 
+- Integrate new lib-sourcify classes in server (#1960)
 - Use VerificationExport for storeVerification methods of storage services (#1995)
 - Improve express error handler (#2027)
 - Add upgrade contract private endpoint (#2042)
-- Add updated_at column and trigger to sourcify_matches (#2047) 
+- Add updated_at column and trigger to sourcify_matches (#2047)
 - Remove rate limiter (#2046)
 - Update sourcify-chains-default.json to set multiple chains as unsupported
 - Add sourceIds field to v2 lookup (#2060)
@@ -16,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - Update dependencies
 
 New Chains:
+
 - Added Zircuit Garfield Testnet (#2016)
 
 ## sourcify-server@2.7.1 - 2025-03-20

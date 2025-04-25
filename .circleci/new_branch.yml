@@ -41,7 +41,7 @@ jobs:
           command: npx lerna run build
       - run:
           name: lint
-          command: npm run lerna-lint
+          command: npx lerna run lerna-lint
       - run:
           name: test
           command: npx lerna run lerna-test

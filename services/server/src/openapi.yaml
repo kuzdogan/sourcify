@@ -11,6 +11,10 @@ servers:
 tags:
   - name: Contract Lookup
     description: API v2 - Tools and endpoints for looking up contract information
+  - name: Verify Contracts
+    description: API v2 - Submit a contract for verification
+  - name: Verification Jobs
+    description: API v2 - Check the status of a verification job
   - name: Stateless Verification 
     description: API v1 - Main verification endpoints
   - name: (Deprecated) Repository
@@ -22,6 +26,14 @@ paths:
     $ref: "server/apiv1/verification/private/stateless/private.stateless.paths.yaml#/paths/~1private~1verify-deprecated"
   /private/upgrade-contract:
     $ref: "server/apiv1/verification/private/stateless/private.stateless.paths.yaml#/paths/~1private~1upgrade-contract"
+  /v2/verify/{chainId}/{address}:
+    $ref: "apiv2.yaml#/paths/~1v2~1verify~1{chainId}~1{address}"
+  /v2/verify/metadata/{chainId}/{address}:
+    $ref: "apiv2.yaml#/paths/~1v2~1verify~1metadata~1{chainId}~1{address}"
+  /v2/verify/etherscan/{chainId}/{address}:
+    $ref: "apiv2.yaml#/paths/~1v2~1verify~1etherscan~1{chainId}~1{address}"
+  /v2/verify/{verificationId}:
+    $ref: "apiv2.yaml#/paths/~1v2~1verify~1{verificationId}"
   /v2/contract/{chainId}/{address}:
     $ref: "apiv2.yaml#/paths/~1v2~1contract~1{chainId}~1{address}"
   /v2/contracts/{chainId}:
@@ -34,8 +46,8 @@ paths:
     $ref: "server/apiv1/verification/etherscan/stateless/etherscan.stateless.paths.yaml#/paths/~1verify~1etherscan"
   /verify/solc-json:
     $ref: "server/apiv1/verification/solc-json/stateless/solc-json.stateless.paths.yaml#/paths/~1verify~1solc-json"
-  /repository/contracts/{full_match | partial_match}/{chain}/{address}/{filePath}:
-    $ref: "server/apiv1/repository/get-file-static.stateless.paths.yaml#/paths/~1repository~1contracts~1{full_match | partial_match}~1{chain}~1{address}~1{filePath}"
+  /repository/contracts/{matchType}/{chain}/{address}/{filePath}:
+    $ref: "server/apiv1/repository/get-file-static.stateless.paths.yaml#/paths/~1repository~1contracts~1{matchType}~1{chain}~1{address}~1{filePath}"
   /check-all-by-addresses:
     $ref: "server/apiv1/repository/check-all-by-addresses.stateless.paths.yaml#/paths/~1check-all-by-addresses"
   /check-by-addresses:

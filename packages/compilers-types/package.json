@@ -1,16 +1,22 @@
 {
   "name": "@ethereum-sourcify/compilers-types",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "TypeScript types for Sourcify compilers",
   "main": "build/main/index.js",
-  "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
+  "typings": "build/main/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "run-p build:*",
+    "build:main": "tsc -p tsconfig.json",
+    "build:module": "tsc -p tsconfig.module.json",
     "prepublishOnly": "npm run build"
   },
   "files": [
-    "dist"
+    "build/main",
+    "build/module",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
   ],
   "repository": {
     "type": "git",
@@ -29,7 +35,7 @@
   },
   "homepage": "https://github.com/ethereum/sourcify/tree/main/packages/compilers-types#readme",
   "devDependencies": {
-    "typescript": "5.8.2"
+    "typescript": "5.8.3"
   },
   "publishConfig": {
     "access": "public"

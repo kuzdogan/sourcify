@@ -108,6 +108,7 @@ export class ServerFixture {
           store: postgresSessionStore,
         },
         sourcifyPrivateToken: "sourcify-test-token",
+        logLevel: "debug",
       };
 
       this._server = new Server(

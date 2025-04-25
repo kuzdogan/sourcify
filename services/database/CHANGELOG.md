@@ -1,3 +1,14 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [2.4.1](https://github.com/kuzdogan/sourcify/compare/sourcify-database@2.4.0...sourcify-database@2.4.1) (2025-04-25)
+
+### Bug Fixes
+
+- **deps:** update all patch and minor dependencies ([d439283](https://github.com/kuzdogan/sourcify/commit/d439283e16b00c4f8ef196c7ae3a4ae889061c33))
+
 # Changelog for `sourcify-database`
 
 ## sourcify-database@2.4.0 - 2025-04-09
@@ -22,7 +33,6 @@
 ## sourcify-database@2.1.0 - 2025-01-08
 
 - Add missing creation-tx backfill scripts
-
 
 ## sourcify-database@2.0.2 - 2024-12-11
 
@@ -55,14 +65,13 @@
 - Update dependencies
 - Update the script's import-repo command to insert the contracts read from the FS to the Database in batches instead of one-by-one
 
-
 ## sourcify-database@1.1.1 - 2024-05-14
 
 - bump version
 
 ## sourcify-database@1.1.0 - 2024-04-23
 
-- Add session table to migrations 
+- Add session table to migrations
 
 ## sourcify-database@1.0.3 - 2024-04-04
 

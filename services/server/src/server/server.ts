@@ -12,7 +12,11 @@ import { v4 as uuidv4 } from "uuid";
 import { asyncLocalStorage } from "../common/async-context";
 
 // local imports
-import logger from "../common/logger";
+import logger, {
+  LogLevels,
+  setLogLevel,
+  validLogLevels,
+} from "../common/logger";
 import routes from "./routes";
 import genericErrorHandler from "../common/errors/GenericErrorHandler";
 import { initDeprecatedRoutes } from "./apiv1/deprecated.routes";
@@ -21,8 +25,11 @@ import { Services } from "./services/services";
 import { StorageServiceOptions } from "./services/StorageService";
 import { VerificationServiceOptions } from "./services/VerificationService";
 import {
+  getLibSourcifyLoggerLevel,
   ISolidityCompiler,
   IVyperCompiler,
+  SolidityMetadataContract,
+  SourcifyChain,
   SourcifyChainMap,
 } from "@ethereum-sourcify/lib-sourcify";
 import { ChainRepository } from "../sourcify-chain-repository";
@@ -37,6 +44,14 @@ declare module "express-serve-static-core" {
   }
 }
 
+export interface LibSourcifyConfig {
+  ipfsGateway?: {
+    url: string;
+    headers?: HeadersInit;
+  };
+  rpcTimeout?: number;
+}
+
 export interface ServerOptions {
   port: string | number;
   maxFileSize: number;
@@ -48,6 +63,8 @@ export interface ServerOptions {
   upgradeContract: boolean;
   sessionOptions: SessionOptions;
   sourcifyPrivateToken?: string;
+  libSourcifyConfig?: LibSourcifyConfig;
+  logLevel?: string;
 }
 
 export class Server {
@@ -62,9 +79,28 @@ export class Server {
     verificationServiceOptions: VerificationServiceOptions,
     storageServiceOptions: StorageServiceOptions,
   ) {
+    setLogLevel(options.logLevel || "info");
+
     this.port = options.port;
     logger.info("Server port set", { port: this.port });
     this.app = express();
+
+    if (options.libSourcifyConfig) {
+      if (options.libSourcifyConfig.ipfsGateway) {
+        SolidityMetadataContract.setGlobalIpfsGateway(
+          options.libSourcifyConfig.ipfsGateway,
+        );
+      }
+
+      if (options.libSourcifyConfig.rpcTimeout) {
+        SourcifyChain.setGlobalRpcTimeout(options.libSourcifyConfig.rpcTimeout);
+      }
+    }
+    logger.info("lib-sourcify config", {
+      ipfsGateway: SolidityMetadataContract.getGlobalIpfsGateway(),
+      rpcTimeout: SourcifyChain.getGlobalRpcTimeout(),
+      logLevel: getLibSourcifyLoggerLevel(),
+    });
 
     this.chainRepository = new ChainRepository(options.chains);
     logger.info("SourcifyChains.Initialized", {
