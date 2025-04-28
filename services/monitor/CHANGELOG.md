@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/ethereum/sourcify/compare/sourcify-monitor@1.3.11...sourcify-monitor@1.4.0) (2025-04-28)
+
+### Features
+
+- test feat for lib-sourcify, bytecode-utils, and monitor ([4d03ab0](https://github.com/ethereum/sourcify/commit/4d03ab01570d4817fa5c74723742ca00ca82dc85))
+
 ## [1.3.11](https://github.com/ethereum/sourcify/compare/sourcify-monitor@1.3.10...sourcify-monitor@1.3.11) (2025-04-25)
 
 **Note:** Version bump only for package sourcify-monitor

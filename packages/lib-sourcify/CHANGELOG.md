@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/ethereum/sourcify/compare/@ethereum-sourcify/lib-sourcify@2.0.2...@ethereum-sourcify/lib-sourcify@2.1.0) (2025-04-28)
+
+### Features
+
+- test feat for lib-sourcify, bytecode-utils, and monitor ([4d03ab0](https://github.com/ethereum/sourcify/commit/4d03ab01570d4817fa5c74723742ca00ca82dc85))
+- Testing a feature bump in lib-sourcify ([89464f7](https://github.com/ethereum/sourcify/commit/89464f7b2770eb945616285d270ca82495acfaf3))
+
 ## [2.0.2](https://github.com/ethereum/sourcify/compare/@ethereum-sourcify/lib-sourcify@2.0.1...@ethereum-sourcify/lib-sourcify@2.0.2) (2025-04-25)
 
 **Note:** Version bump only for package @ethereum-sourcify/lib-sourcify
